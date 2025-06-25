@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:laundry_app/auth/login_screen.dart';
+import 'package:laundry_app/view/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white38),
       ),
-      home: LoginScreen(),
+      home: SplashScreen(),
     );
   }
 }
