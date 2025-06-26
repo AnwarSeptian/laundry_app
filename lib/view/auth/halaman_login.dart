@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:laundry_app/api/user_api.dart';
 import 'package:laundry_app/helper/shared_preference.dart';
 import 'package:laundry_app/view/auth/halaman_register.dart';
-import 'package:laundry_app/view/halaman/halaman_home.dart';
+import 'package:laundry_app/view/halaman/button_navbar.dart';
 
 class HalamanLogin extends StatefulWidget {
   const HalamanLogin({super.key});
@@ -38,7 +38,7 @@ class _HalamanLoginState extends State<HalamanLogin> {
       );
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => HalamanHome()),
+        MaterialPageRoute(builder: (context) => ButtonNavbar()),
         (route) => false,
       );
       // Navigator.pop(context);
