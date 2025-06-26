@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:laundry_app/api/user_api.dart';
+import 'package:laundry_app/constant/app_color.dart';
 import 'package:laundry_app/helper/shared_preference.dart';
 import 'package:laundry_app/view/auth/halaman_register.dart';
 import 'package:laundry_app/view/halaman/button_navbar.dart';
+import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 class HalamanLogin extends StatefulWidget {
   const HalamanLogin({super.key});
@@ -30,40 +34,54 @@ class _HalamanLoginState extends State<HalamanLogin> {
     if (res["data"] != null) {
       PreferenceHandler.saveToken(res["data"]["token"]);
       print("Token: ${res["data"]["token"]}");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Login successful!"),
-          backgroundColor: Colors.green,
-        ),
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.success(message: "Login Berhasil"),
       );
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => ButtonNavbar()),
         (route) => false,
       );
-      // Navigator.pop(context);
-    } else if (res["errors"] != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Maaf, ${res["message"]}"),
-          backgroundColor: Colors.red,
-        ),
+    } else {
+      String pesanError = "";
+
+      if (res["errors"] != null) {
+        pesanError = res["errors"].entries
+            .map((e) => e.value.join(', '))
+            .join('\n');
+      } else if (res["message"] != null) {
+        pesanError = res["message"];
+      } else {
+        pesanError = "Terjadi kesalahan yang tidak diketahui.";
+      }
+
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(message: "$pesanError"),
       );
     }
     setState(() {
       isLoading = false;
     });
-
-    // } else {
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: Stack(children: [buildBackground(), buildLayer()]),
+      body: OverlayLoaderWithAppIcon(
+        isLoading: isLoading,
+        appIcon: Image.asset("assets/images/logo.png"),
+        circularProgressColor: AppColor.bold,
+        overlayOpacity: 1,
+        borderRadius: 16,
+        appIconSize: 100,
+        child: Scaffold(
+          body: Form(
+            key: _formKey,
+            child: Stack(children: [buildBackground(), buildLayer()]),
+          ),
+        ),
       ),
     );
   }
@@ -117,32 +135,26 @@ class _HalamanLoginState extends State<HalamanLogin> {
               ),
               height(36),
               GestureDetector(
-                onTap:
-                    isLoading
-                        ? null
-                        : () {
-                          if (_formKey.currentState!.validate()) {
-                            login();
-                            print('Email : ${emailController.text}');
-                          }
-                        },
-                child:
-                    isLoading
-                        ? Center(child: CircularProgressIndicator())
-                        : Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Colors.white38,
-                              radius: 26,
-                              child: Icon(
-                                Icons.navigate_next_sharp,
-                                color: Colors.black54,
-                                size: 32,
-                              ),
-                            ),
-                          ],
-                        ),
+                onTap: () {
+                  if (_formKey.currentState!.validate()) {
+                    login();
+                    print('Email : ${emailController.text}');
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.white38,
+                      radius: 26,
+                      child: Icon(
+                        Icons.navigate_next_sharp,
+                        color: Colors.black54,
+                        size: 32,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               height(30),
               Row(

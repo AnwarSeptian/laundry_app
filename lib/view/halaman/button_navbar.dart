@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:laundry_app/view/halaman/halaman_home.dart';
 import 'package:laundry_app/view/halaman/halaman_pesanan.dart';
+import 'package:laundry_app/view/halaman/halaman_profile.dart';
 
 class ButtonNavbar extends StatefulWidget {
   const ButtonNavbar({super.key});
@@ -10,7 +11,11 @@ class ButtonNavbar extends StatefulWidget {
 }
 
 class _ButtonNavbarState extends State<ButtonNavbar> {
-  static const List<Widget> _screen = [HalamanHome(), HalamanPesanan()];
+  static const List<Widget> _screen = [
+    HalamanHome(),
+    HalamanPesanan(),
+    HalamanProfile(),
+  ];
   int _buttonSelected = 0;
   @override
   Widget build(BuildContext context) {
@@ -33,6 +38,7 @@ class _ButtonNavbarState extends State<ButtonNavbar> {
             icon: Icon(Icons.receipt_long),
             label: "Pesanan",
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.person_3), label: "Profile"),
         ],
       ),
       body: _screen[_buttonSelected],

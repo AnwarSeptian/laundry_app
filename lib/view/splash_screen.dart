@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:laundry_app/helper/shared_preference.dart';
 import 'package:laundry_app/view/auth/halaman_login.dart';
+import 'package:laundry_app/view/halaman/button_navbar.dart';
+import 'package:laundry_app/view/halaman/halaman_home.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,12 +14,22 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   void changePage() {
     Future.delayed(Duration(seconds: 3), () async {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => HalamanLogin()),
-        (route) => false,
-      );
-      // }
+      String? isLogin = await PreferenceHandler.getToken();
+      print("isLogin : $isLogin");
+
+      if (isLogin != null) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => ButtonNavbar()),
+          (route) => false,
+        );
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HalamanLogin()),
+          (route) => false,
+        );
+      }
     });
   }
 

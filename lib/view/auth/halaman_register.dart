@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:laundry_app/api/user_api.dart';
 import 'package:laundry_app/view/auth/halaman_login.dart';
+import 'package:laundry_app/view/halaman/button_navbar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 class HalamanRegister extends StatefulWidget {
   const HalamanRegister({super.key});
@@ -23,29 +26,41 @@ class _HalamanRegisterState extends State<HalamanRegister> {
       isLoading = true;
     });
     final res = await userService.registerUser(
-      email: emailController.text,
       name: nameController.text,
+      email: emailController.text,
       password: passwordController.text,
     );
     if (res["data"] != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Registration successful!"),
-          backgroundColor: Colors.green,
-        ),
+      print("Token: ${res["data"]["token"]}");
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.success(message: "Registrasi Berhasil"),
       );
       Navigator.pop(context);
-    } else if (res["errors"] != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Maaf, ${res["message"]}"),
-          backgroundColor: Colors.red,
-        ),
+    } else {
+      String pesanError = "";
+
+      if (res["errors"] != null) {
+        pesanError = res["errors"].entries
+            .map((e) => e.value.join(', '))
+            .join('\n');
+      } else if (res["message"] != null) {
+        pesanError = res["message"];
+      } else {
+        pesanError = "Terjadi kesalahan yang tidak diketahui.";
+      }
+
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(message: "$pesanError"),
       );
     }
     setState(() {
       isLoading = false;
     });
+
+    // } else {
+    // }
   }
 
   @override

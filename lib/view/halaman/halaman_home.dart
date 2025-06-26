@@ -1,9 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:laundry_app/api/tampilan_api.dart';
 import 'package:laundry_app/api/user_api.dart';
 import 'package:laundry_app/constant/app_color.dart';
-import 'package:laundry_app/model/register_response.dart';
-import 'package:laundry_app/view/halaman/halaman_profile.dart';
+import 'package:laundry_app/model/list_layanan_response.dart';
+import 'package:laundry_app/model/profile_respons.dart';
+import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 
 class HalamanHome extends StatefulWidget {
   const HalamanHome({super.key});
@@ -19,18 +21,32 @@ class _HalamanHomeState extends State<HalamanHome> {
     'assets/images/banner4.png',
     'assets/images/banner5.png',
   ];
-  List<User> _layananList = [];
-  final bool _isLoading = true;
-  @override
-  void initState() {
-    super.initState();
-  }
+  Data? profileUser;
+  List<User> layananList = [];
+  bool isLoading = true;
 
   void loadData() async {
-    final data = await UserService.getLayanan();
-    setState(() {
-      _layananList = data;
-    });
+    try {
+      final profilRes = await UserService().getProfile();
+      final layananRes = await TampilanApi.getLayanan();
+
+      setState(() {
+        profileUser = profilRes.data;
+        layananList = layananRes.data;
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    loadData();
+    super.initState();
   }
 
   @override
@@ -39,119 +55,101 @@ class _HalamanHomeState extends State<HalamanHome> {
       backgroundColor: AppColor.bluegrey,
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        backgroundColor: AppColor.lightblue,
+        backgroundColor: AppColor.lightgreen,
         child: Icon(Icons.add),
       ),
-      body: Stack(
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            "Selamat Datang,",
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 18,
-                            ),
-                          ),
-                          Text(
-                            "Samantha Martin",
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HalamanProfile(),
+      body: OverlayLoaderWithAppIcon(
+        isLoading: isLoading,
+        appIcon: Image.asset("assets/images/logo.png"),
+        circularProgressColor: AppColor.bold,
+        overlayOpacity: 0.4,
+        borderRadius: 16,
+        appIconSize: 100,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(width: 10),
+                Text("Selamat Datang,", style: TextStyle(color: AppColor.bold)),
+                Text(
+                  profileUser?.name ?? "",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+
+                SizedBox(height: 16),
+                SizedBox(
+                  child: CarouselSlider(
+                    options: CarouselOptions(height: 170, autoPlay: true),
+                    items:
+                        _banner.map((e) {
+                          return SizedBox(
+                            width: double.infinity,
+                            child: ClipRRect(
+                              child: Image.asset(
+                                e,
+                                fit: BoxFit.fill,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
                             ),
                           );
-                        },
-                        icon: Icon(
-                          Icons.person_3_sharp,
-                          size: 32,
-                          color: AppColor.bold,
-                        ),
-                      ),
-                    ],
+                        }).toList(),
                   ),
-                  SizedBox(height: 16),
-                  SizedBox(
-                    child: CarouselSlider(
-                      options: CarouselOptions(height: 170, autoPlay: true),
-                      items:
-                          _banner.map((e) {
-                            return SizedBox(
-                              width: double.infinity,
-                              child: ClipRRect(
-                                child: Image.asset(
-                                  e,
-                                  fit: BoxFit.fill,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                    ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  "Daftar Layanan",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 24,
+                    color: AppColor.bold,
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    "Daftar Layanan",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 24,
-                      color: AppColor.bold,
-                    ),
-                  ),
+                ),
 
-                  Expanded(
-                    child: FutureBuilder(
-                      future: UserService.getProfile(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasData) {
-                          final list = snapshot.data?["data"];
-                          print(list);
-                          return GridView.builder(
+                Expanded(
+                  child:
+                      layananList.isEmpty
+                          ? Center(child: Text("Tidak ada layanan tersedia"))
+                          : GridView.builder(
+                            itemCount: layananList.length,
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                 ),
                             itemBuilder: (BuildContext context, int index) {
-                              return Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                elevation: 4,
-                                child: Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
+                              final layanan = layananList[index];
+                              return GestureDetector(
+                                onTap: () {},
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  elevation: 4,
+                                  child: Stack(
                                     children: [
-                                      Icon(Icons.abc_outlined, size: 40),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "Judul",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                      Image.asset(
+                                        "assets/images/logomesin.jpg",
+                                      ),
+                                      Container(
+                                        width: double.infinity,
+                                        height: 32,
+                                        decoration: BoxDecoration(
+                                          color: AppColor.lightblue,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            layanan.name,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: AppColor.bold,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -159,18 +157,12 @@ class _HalamanHomeState extends State<HalamanHome> {
                                 ),
                               );
                             },
-                          );
-                        } else {
-                          return Text("Error : $snapshot");
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                          ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
