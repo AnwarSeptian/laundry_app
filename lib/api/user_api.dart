@@ -1,10 +1,7 @@
 import 'package:http/http.dart' as http;
-import 'package:laundry_app/api/endpoint.dart';
-import 'package:laundry_app/helper/shared_preference.dart';
-import 'package:laundry_app/model/list_layanan_response.dart';
-import 'package:laundry_app/model/profile_respons.dart';
-import 'package:laundry_app/model/register_error_response.dart';
-import 'package:laundry_app/model/register_response.dart';
+import 'package:laundry_app/utils/endpoint.dart';
+import 'package:laundry_app/utils/shared_preference.dart';
+import 'package:laundry_app/model/user_respons.dart';
 
 class UserService {
   Future<Map<String, dynamic>> registerUser({
@@ -63,8 +60,40 @@ class UserService {
     if (response.statusCode == 200) {
       print(profileResponseFromJson(response.body));
       return profileResponseFromJson(response.body);
-    } else if (response.statusCode == 401) {
+    } else {
+      print('${response.statusCode}');
+      throw Exception("${response.statusCode}");
+    }
+  }
+
+  Future<ProfileResponse> updateProfile({required String name}) async {
+    String? token = await PreferenceHandler.getToken();
+
+    final response = await http.put(
+      Uri.parse(Endpoint.updateProfile),
+      headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
+      body: {"name": name},
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
       return profileResponseFromJson(response.body);
+    } else {
+      throw Exception("Gagal update profile : ${response.body}");
+    }
+  }
+
+  Future<ListUser> listUser() async {
+    String? token = await PreferenceHandler.getToken();
+
+    final response = await http.get(
+      Uri.parse(Endpoint.updateProfile),
+      headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
+    );
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      print(ListUserFromJson(response.body));
+      return ListUserFromJson(response.body);
     } else {
       print('${response.statusCode}');
       throw Exception("${response.statusCode}");
