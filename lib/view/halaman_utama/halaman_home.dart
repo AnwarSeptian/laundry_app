@@ -1,10 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:laundry_app/api/tampilan_api.dart';
+import 'package:laundry_app/api/layanan_api.dart';
 import 'package:laundry_app/api/user_api.dart';
 import 'package:laundry_app/constant/app_color.dart';
-import 'package:laundry_app/model/list_layanan_response.dart';
-import 'package:laundry_app/model/profile_respons.dart';
+import 'package:laundry_app/model/layanan_response.dart';
+import 'package:laundry_app/model/user_respons.dart';
+import 'package:laundry_app/view/halaman_detail/detail_layanan.dart';
+import 'package:laundry_app/view/halaman_detail/tambah_layanan.dart';
 import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 
 class HalamanHome extends StatefulWidget {
@@ -22,13 +24,13 @@ class _HalamanHomeState extends State<HalamanHome> {
     'assets/images/banner5.png',
   ];
   Data? profileUser;
-  List<User> layananList = [];
+  List<DataLayanan> layananList = [];
   bool isLoading = true;
 
   void loadData() async {
     try {
       final profilRes = await UserService().getProfile();
-      final layananRes = await TampilanApi.getLayanan();
+      final layananRes = await LayananApi.getLayanan();
 
       setState(() {
         profileUser = profilRes.data;
@@ -54,7 +56,12 @@ class _HalamanHomeState extends State<HalamanHome> {
     return Scaffold(
       backgroundColor: AppColor.bluegrey,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TambahLayanan()),
+          );
+        },
         backgroundColor: AppColor.lightgreen,
         child: Icon(Icons.add),
       ),
@@ -76,7 +83,7 @@ class _HalamanHomeState extends State<HalamanHome> {
                 Text(
                   profileUser?.name ?? "",
                   style: TextStyle(
-                    color: Colors.black87,
+                    color: AppColor.bold,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -85,7 +92,13 @@ class _HalamanHomeState extends State<HalamanHome> {
                 SizedBox(height: 16),
                 SizedBox(
                   child: CarouselSlider(
-                    options: CarouselOptions(height: 170, autoPlay: true),
+                    options: CarouselOptions(
+                      height: 170,
+                      autoPlay: true,
+                      viewportFraction: 1.0,
+                      autoPlayAnimationDuration: Duration(seconds: 1),
+                      autoPlayInterval: Duration(seconds: 10),
+                    ),
                     items:
                         _banner.map((e) {
                           return SizedBox(
@@ -124,13 +137,24 @@ class _HalamanHomeState extends State<HalamanHome> {
                                 ),
                             itemBuilder: (BuildContext context, int index) {
                               final layanan = layananList[index];
-                              return GestureDetector(
-                                onTap: () {},
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  elevation: 4,
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                elevation: 4,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) => DetailLayanan(
+                                              layanan: layanan.name,
+                                              id: layanan.id,
+                                            ),
+                                      ),
+                                    );
+                                  },
                                   child: Stack(
                                     children: [
                                       Image.asset(

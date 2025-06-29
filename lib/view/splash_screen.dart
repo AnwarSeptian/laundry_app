@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:laundry_app/helper/shared_preference.dart';
+import 'package:laundry_app/utils/shared_preference.dart';
 import 'package:laundry_app/view/auth/halaman_login.dart';
-import 'package:laundry_app/view/halaman/button_navbar.dart';
-import 'package:laundry_app/view/halaman/halaman_home.dart';
+import 'package:laundry_app/view/halaman_utama/button_navbar.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:laundry_app/view/halaman/halaman_home.dart';
-import 'package:laundry_app/view/halaman/halaman_pesanan.dart';
-import 'package:laundry_app/view/halaman/halaman_profile.dart';
+import 'package:laundry_app/view/halaman_utama/halaman_home.dart';
+import 'package:laundry_app/view/halaman_utama/halaman_pesanan.dart';
+import 'package:laundry_app/view/halaman_utama/halaman_profile.dart';
 
 class ButtonNavbar extends StatefulWidget {
   const ButtonNavbar({super.key});
