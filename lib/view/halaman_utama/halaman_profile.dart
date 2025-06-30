@@ -151,9 +151,9 @@ class _HalamanProfileState extends State<HalamanProfile> {
                             children: [
                               CircleAvatar(
                                 backgroundColor: AppColor.bold3,
+                                radius: 20,
 
                                 child: Icon(Icons.edit, color: Colors.white),
-                                radius: 20,
                               ),
                               SizedBox(width: 8),
                               Text(
@@ -223,12 +223,12 @@ class _HalamanProfileState extends State<HalamanProfile> {
                             children: [
                               CircleAvatar(
                                 backgroundColor: AppColor.bold3,
+                                radius: 20,
 
                                 child: Icon(
                                   Icons.receipt_outlined,
                                   color: Colors.white,
                                 ),
-                                radius: 20,
                               ),
                               SizedBox(width: 8),
                               Text(
@@ -261,12 +261,12 @@ class _HalamanProfileState extends State<HalamanProfile> {
                             children: [
                               CircleAvatar(
                                 backgroundColor: AppColor.bold3,
+                                radius: 20,
 
                                 child: Icon(
                                   Icons.person_search_sharp,
                                   color: Colors.white,
                                 ),
-                                radius: 20,
                               ),
                               SizedBox(width: 8),
                               Text(
@@ -289,7 +289,7 @@ class _HalamanProfileState extends State<HalamanProfile> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 40),
+                        SizedBox(height: 20),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColor.bold,

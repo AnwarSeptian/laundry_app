@@ -1,18 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:laundry_app/api/layanan_api.dart';
+import 'package:laundry_app/constant/app_color.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-
-import 'package:laundry_app/api/layanan_api.dart';
-import 'package:laundry_app/api/order_api.dart';
-import 'package:laundry_app/constant/app_color.dart';
-import 'package:laundry_app/view/halaman_detail/tambah_order.dart';
 
 class DetailLayanan extends StatefulWidget {
   final int id;
   final String? layanan;
-  const DetailLayanan({Key? key, required this.id, this.layanan})
-    : super(key: key);
+  const DetailLayanan({super.key, required this.id, this.layanan});
 
   @override
   State<DetailLayanan> createState() => _DetailLayananState();

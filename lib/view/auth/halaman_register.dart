@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:laundry_app/api/user_api.dart';
 import 'package:laundry_app/view/auth/halaman_login.dart';
-import 'package:laundry_app/view/halaman_utama/button_navbar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class HalamanRegister extends StatefulWidget {
   const HalamanRegister({super.key});
@@ -52,7 +51,7 @@ class _HalamanRegisterState extends State<HalamanRegister> {
 
       showTopSnackBar(
         Overlay.of(context),
-        CustomSnackBar.error(message: "$pesanError"),
+        CustomSnackBar.error(message: pesanError),
       );
     }
     setState(() {
