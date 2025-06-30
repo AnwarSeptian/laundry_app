@@ -81,7 +81,12 @@ class OrderApi {
     String? token = await PreferenceHandler.getToken();
     final response = await http.post(
       Uri.parse("${Endpoint.orders}/$id/status"),
-      headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
+      headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({"status": status}),
     );
     print("Ganti status order ${response.body}");
 
