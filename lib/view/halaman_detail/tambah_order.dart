@@ -3,6 +3,8 @@ import 'package:laundry_app/api/layanan_api.dart';
 import 'package:laundry_app/api/order_api.dart';
 import 'package:laundry_app/constant/app_color.dart';
 import 'package:laundry_app/model/layanan_response.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class TambahOrder extends StatefulWidget {
   const TambahOrder({super.key});
@@ -56,15 +58,17 @@ class _TambahOrderState extends State<TambahOrder> {
       );
       print('Pesanan berhasil: ${response.message}');
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("✅ Berhasil: ${response.message}")),
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.success(message: "Berhasil membuat Order!"),
       );
 
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(" Gagal: $e")));
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(message: "Gagal membuat order!"),
+      );
     } finally {
       setState(() => _isLoading = false);
     }
@@ -173,11 +177,10 @@ class _TambahOrderState extends State<TambahOrder> {
                                     _selectedPengantaran != null) {
                                   submitOrder(); // ✅ Kirim jika data lengkap
                                 } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        "Semua field wajib dipilih",
-                                      ),
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    CustomSnackBar.info(
+                                      message: "Lengkapi pesanan! ",
                                     ),
                                   );
                                 }

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:laundry_app/api/layanan_api.dart';
 import 'package:laundry_app/constant/app_color.dart';
@@ -15,36 +14,6 @@ class DetailLayanan extends StatefulWidget {
 }
 
 class _DetailLayananState extends State<DetailLayanan> {
-  void tambahLayanan() async {
-    try {
-      final response = await LayananApi.getLayanan();
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.success(message: "Registrasi Berhasil"),
-      );
-    } catch (e) {
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.success(message: "Registrasi Berhasil"),
-      );
-    }
-  }
-
-  Future<void> hapusLayanan(int id) async {
-    try {
-      final response = await LayananApi().deleteLayanan(id);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("✅ ${response.message}")));
-
-      // Refresh ulang layanan kalau perlu
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("❌ Gagal hapus layanan: $e")));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,22 +91,19 @@ class _DetailLayananState extends State<DetailLayanan> {
                               if (confirm == true) {
                                 try {
                                   final hapusResponse = await LayananApi()
-                                      .deleteLayanan(
-                                        widget.id,
-                                      ); // Ganti `id` sesuai data layanan yang akan dihapus
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        "✅ ${hapusResponse.message}",
-                                      ),
+                                      .deleteLayanan(widget.id);
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    CustomSnackBar.info(
+                                      message: "Layanan berhasil dihapus!",
                                     ),
                                   );
-
-                                  // Refresh UI atau hapus dari list layanan lokal
+                                  Navigator.pop(context);
                                 } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("❌ Gagal hapus: $e"),
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    CustomSnackBar.error(
+                                      message: "Gagal menghapus layanan",
                                     ),
                                   );
                                 }

@@ -6,6 +6,8 @@ import 'package:laundry_app/utils/shared_preference.dart';
 import 'package:laundry_app/view/auth/halaman_login.dart';
 import 'package:laundry_app/view/halaman_utama/halaman_pesanan.dart';
 import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class HalamanProfile extends StatefulWidget {
   const HalamanProfile({super.key});
@@ -76,8 +78,9 @@ class _HalamanProfileState extends State<HalamanProfile> {
             ),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Gagal memuat daftar pengguna: $e")),
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.info(message: "Layanan berhasil dihapus!"),
       );
     }
   }
@@ -173,6 +176,9 @@ class _HalamanProfileState extends State<HalamanProfile> {
                                 builder:
                                     (_) => AlertDialog(
                                       title: TextFormField(
+                                        decoration: InputDecoration(
+                                          label: Text("Edit Nama Profile"),
+                                        ),
                                         controller: nameController,
                                       ),
                                       actions: [
@@ -195,17 +201,17 @@ class _HalamanProfileState extends State<HalamanProfile> {
                                 try {
                                   final editProfile = await UserService()
                                       .updateProfile(name: nameController.text);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("✅ ${editProfile.message}"),
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    CustomSnackBar.success(
+                                      message: "${editProfile.message}",
                                     ),
                                   );
-
-                                  // Refresh UI atau hapus dari list layanan lokal
                                 } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("❌ Gagal hapus: $e"),
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    CustomSnackBar.error(
+                                      message: "Layanan berhasil dihapus!",
                                     ),
                                   );
                                 }
@@ -303,6 +309,10 @@ class _HalamanProfileState extends State<HalamanProfile> {
                                 builder: (context) => HalamanLogin(),
                               ),
                               (route) => false,
+                            );
+                            showTopSnackBar(
+                              Overlay.of(context),
+                              CustomSnackBar.info(message: "Logout berhasil"),
                             );
                           },
                           child: Row(

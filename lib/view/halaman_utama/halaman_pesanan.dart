@@ -18,6 +18,15 @@ class _HalamanPesananState extends State<HalamanPesanan> {
   bool isLoading = true;
   String? errorMessage;
 
+  String selectedStatusFilter = 'Semua';
+  final List<String> statusFilters = [
+    'Semua',
+    'Baru',
+    'Proses',
+    'Selesai',
+    'Dibatalkan',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -30,19 +39,12 @@ class _HalamanPesananState extends State<HalamanPesanan> {
     });
     try {
       final dataOrder = await OrderApi().getOrder();
-      print('Data dari API: ${dataOrder.length} item');
-
-      if (dataOrder.isNotEmpty) {
-        print('Contoh data pertama: ${dataOrder[0].toJson()}');
-      }
-
       setState(() {
         orders = dataOrder;
       });
     } catch (e) {
-      print('Error: $e');
       setState(() {
-        errorMessage = "Gagal memuat data  $e";
+        errorMessage = "Gagal memuat data: $e";
       });
     } finally {
       setState(() {
@@ -54,102 +56,230 @@ class _HalamanPesananState extends State<HalamanPesanan> {
   Future<void> showOrderDetailDialog(BuildContext context, int orderId) async {
     try {
       final orderDetail = await OrderApi().detailOrder(orderId);
-      if (!mounted)
-        return; //untuk mengakses context widget yang sudah tidak aktif lagi
+      if (!mounted) return;
       final order = orderDetail.data;
 
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Detail Pesanan"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("ID : ${order.id}"),
-                Text("Layanan : ${order.layanan}"),
-                Text("Status : ${order.status}"),
-                Text("Jenis : ${order.serviceType.name}"),
-                Text(
-                  "Tanggal dibuat : ${DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt)}",
-                ),
-                Text(
-                  "Terakhir diubah : ${DateFormat('dd/MM/yyyy HH:mm').format(order.updatedAt)}",
-                ),
-              ],
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-            actions: [
-              TextButton(onPressed: () {}, child: Text("Ubah Status")),
-
-              TextButton(
-                onPressed: () async {
-                  try {
-                    await OrderApi().deleteOrder(order.id);
-
-                    if (!mounted) return;
-
-                    Navigator.pop(context); // tutup dialog
-
-                    // Tampilkan feedback
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Pesanan berhasil dibatalkan")),
-                    );
-
-                    _loadOrders(); // refresh list
-                  } catch (e) {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Gagal membatalkan pesanan: $e"),
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Text(
+                        "Detail Pesanan",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.bold,
                         ),
-                      );
-                    }
-                  }
-                },
-                child: Text("Batalkan"),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildDetailRow("ID", "#${order.id}"),
+                    _buildDetailRow("Jenis Layanan", order.serviceType.name),
+
+                    _buildDetailRow("Pengantaran ", order.layanan),
+                    _buildDetailRow("Status", order.status),
+                    _buildDetailRow(
+                      "Dibuat",
+                      DateFormat('dd/MM/yyyy ').format(order.createdAt),
+                    ),
+                    _buildDetailRow(
+                      "Diubah",
+                      DateFormat('dd/MM/yyyy ').format(order.updatedAt),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        OutlinedButton.icon(
+                          icon: Icon(Icons.cancel, color: Colors.red),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: Colors.red),
+                          ),
+                          onPressed: () async {
+                            try {
+                              await OrderApi().deleteOrder(order.id);
+                              if (!context.mounted) return;
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Pesanan berhasil dibatalkan"),
+                                ),
+                              );
+                              _loadOrders();
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      "Gagal membatalkan pesanan: $e",
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          label: Text("Batalkan"),
+                        ),
+                        ElevatedButton.icon(
+                          icon: Icon(Icons.edit),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColor.lightblue,
+                          ),
+                          onPressed: () async {
+                            String? selectedStatus;
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return StatefulBuilder(
+                                  builder: (context, setState) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      title: Text("Ubah Status Pesanan"),
+                                      content: DropdownButtonFormField<String>(
+                                        value: selectedStatus,
+                                        hint: Text("Pilih status baru"),
+                                        items:
+                                            ['Proses', 'Selesai'].map((status) {
+                                              return DropdownMenuItem(
+                                                value: status,
+                                                child: Text(status),
+                                              );
+                                            }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedStatus = value;
+                                          });
+                                        },
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed:
+                                              () => Navigator.pop(context),
+                                          child: Text("Batal"),
+                                        ),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          onPressed: () async {
+                                            if (selectedStatus == null) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    "Pilih status terlebih dahulu",
+                                                  ),
+                                                ),
+                                              );
+                                              return;
+                                            }
+                                            try {
+                                              await OrderApi().ubahStatus(
+                                                id: order.id,
+                                                status: selectedStatus!,
+                                              );
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    "Status berhasil diubah",
+                                                  ),
+                                                ),
+                                              );
+                                              _loadOrders();
+                                            } catch (e) {
+                                              Navigator.pop(context);
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    "Gagal mengubah status: $e",
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: Text("Ubah"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          label: Text("Ubah Status"),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Center(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text("Tutup"),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text("Tutup"),
-              ),
-            ],
+            ),
           );
         },
       );
     } catch (e) {
       if (mounted) {
-        Future.microtask(() {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gagal memuat detail pesanan: $e')),
-          );
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal memuat detail pesanan: $e')),
+        );
       }
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
     }
   }
 
-  // Helper to get color based on status
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'baru':
-        return Colors.blue;
-      case 'proses':
-        return Colors.orange;
-      case 'selesai':
-        return Colors.green;
-      case 'dibatalkan':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("$label: ", style: TextStyle(fontWeight: FontWeight.bold)),
+          Expanded(child: Text(value, style: TextStyle(color: Colors.black87))),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final filteredOrders =
+        selectedStatusFilter == 'Semua'
+            ? orders
+            : orders
+                .where(
+                  (order) =>
+                      order.status.toLowerCase() ==
+                      selectedStatusFilter.toLowerCase(),
+                )
+                .toList();
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -174,69 +304,158 @@ class _HalamanPesananState extends State<HalamanPesanan> {
         overlayOpacity: 0.4,
         borderRadius: 16,
         appIconSize: 100,
-        child:
-            isLoading
-                ? Center(child: Text("Tidak ada pesanan"))
-                : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: orders.length,
-                  itemBuilder: (context, index) {
-                    final order = orders[index];
-                    return GestureDetector(
-                      onTap: () async {
-                        await showOrderDetailDialog(context, order.id);
-                      },
-                      child: Card(
-                        margin: const EdgeInsets.only(bottom: 16.0),
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: ListTile(
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 4,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _getStatusColor(
-                                        order.status,
-                                      ).withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(order.status),
-                                  ),
-                                ],
-                              ),
-                              Text("Jenis Layanan: ${order.layanan}"),
-                              Text("Tipe Layanan : ${order.serviceType.name}"),
-
-                              Text(
-                                "Dibuat : ${DateFormat('dd/MM/yyyy').format(order.createdAt)}",
-                                style: TextStyle(color: AppColor.bluegrey),
-                              ),
-                            ],
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children:
+                      statusFilters.map((status) {
+                        final isSelected = selectedStatusFilter == status;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: ChoiceChip(
+                            label: Text(status),
+                            selected: isSelected,
+                            selectedColor: Colors.lightGreen.shade100,
+                            onSelected: (_) {
+                              setState(() {
+                                selectedStatusFilter = status;
+                              });
+                            },
                           ),
-
-                          // trailing: IconButton(
-                          //   icon: Icon(Icons.navigate_next),
-                          //   onPressed: () async {
-                          //     await showOrderDetailDialog(context, order.id);
-                          //   },
-                          // ),
-                          leading: CircleAvatar(child: Text("${index + 1}")),
-                        ),
-                      ),
-                    );
-                  },
+                        );
+                      }).toList(),
                 ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child:
+                    filteredOrders.isEmpty
+                        ? Center(child: Text("Tidak ada pesanan"))
+                        : ListView.builder(
+                          itemCount: filteredOrders.length,
+                          itemBuilder: (context, index) {
+                            final order = filteredOrders[index];
+                            return GestureDetector(
+                              onTap:
+                                  () =>
+                                      showOrderDetailDialog(context, order.id),
+                              child: Card(
+                                margin: const EdgeInsets.only(bottom: 16),
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                _getStatusIcon(order.status),
+                                                color: _getStatusColor(
+                                                  order.status,
+                                                ),
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                order.serviceType.name,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                "(${order.status})",
+                                                style: TextStyle(
+                                                  color: _getStatusColor(
+                                                    order.status,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Text("#ID ${order.id}"),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8),
+
+                                      Text("Layanan : ${order.layanan}"),
+                                      SizedBox(height: 8),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.calendar_today,
+                                                size: 14,
+                                                color: Colors.grey,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                DateFormat(
+                                                  'dd MMM yyyy',
+                                                ).format(order.createdAt),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'baru':
+        return Colors.blue;
+      case 'proses':
+        return Colors.orange;
+      case 'selesai':
+        return Colors.green;
+      case 'dibatalkan':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+}
+
+IconData _getStatusIcon(String status) {
+  switch (status.toLowerCase()) {
+    case 'baru':
+      return Icons.fiber_new;
+    case 'proses':
+      return Icons.hourglass_top;
+    case 'selesai':
+      return Icons.check_circle;
+    case 'dibatalkan':
+      return Icons.cancel;
+    default:
+      return Icons.info;
   }
 }

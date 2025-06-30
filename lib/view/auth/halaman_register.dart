@@ -65,6 +65,7 @@ class _HalamanRegisterState extends State<HalamanRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Form(
         key: _formKey,
         child: Stack(children: [buildBackground(), buildLayer()]),
