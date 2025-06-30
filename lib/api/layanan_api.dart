@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:laundry_app/model/layanan_response.dart';
 import 'package:laundry_app/utils/endpoint.dart';
 import 'package:laundry_app/utils/shared_preference.dart';
-import 'package:laundry_app/model/layanan_response.dart';
 
 class LayananApi {
   static Future<ListLayananResponses> getLayanan() async {
@@ -60,7 +60,7 @@ class LayananApi {
       return hapusLayananFromJson(response.body);
     } else {
       print("Gagal hapus pesanan : ${response.body}");
-      throw Exception("Gagal Hapus Pesanan");
+      throw Exception("Gagal Hapus layanan");
     }
   }
 }

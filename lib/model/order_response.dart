@@ -168,7 +168,15 @@ class DataOrder {
     status: json["status"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
-    serviceType: ServiceType.fromJson(json["service_type"]),
+    serviceType:
+        json["service_type"] != null
+            ? ServiceType.fromJson(json["service_type"])
+            : ServiceType(
+              id: 0,
+              name: "Tidak diketahui",
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+            ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -181,4 +189,48 @@ class DataOrder {
     "updated_at": updatedAt.toIso8601String(),
     "service_type": serviceType.toJson(),
   };
+}
+// To parse this JSON data, do
+//
+//     final detailOrder = detailOrderFromJson(jsonString);
+
+DetailOrder detailOrderFromJson(String str) =>
+    DetailOrder.fromJson(json.decode(str));
+
+String detailOrderToJson(DetailOrder data) => json.encode(data.toJson());
+
+class DetailOrder {
+  String message;
+  DataOrder data;
+
+  DetailOrder({required this.message, required this.data});
+
+  factory DetailOrder.fromJson(Map<String, dynamic> json) => DetailOrder(
+    message: json["message"],
+    data: DataOrder.fromJson(json["data"]),
+  );
+
+  Map<String, dynamic> toJson() => {"message": message, "data": data.toJson()};
+}
+// To parse this JSON data, do
+//
+//     final statusOrder = statusOrderFromJson(jsonString);
+
+StatusOrder statusOrderFromJson(String str) =>
+    StatusOrder.fromJson(json.decode(str));
+
+String statusOrderToJson(StatusOrder data) => json.encode(data.toJson());
+
+class StatusOrder {
+  String message;
+  DataOrder data;
+
+  StatusOrder({required this.message, required this.data});
+
+  factory StatusOrder.fromJson(Map<String, dynamic> json) => StatusOrder(
+    message: json["message"],
+    data: DataOrder.fromJson(json["data"]),
+  );
+
+  Map<String, dynamic> toJson() => {"message": message, "data": data.toJson()};
 }
