@@ -60,7 +60,7 @@ class _TambahOrderState extends State<TambahOrder> {
 
       showTopSnackBar(
         Overlay.of(context),
-        CustomSnackBar.success(message: "Berhasil membuat Order!"),
+        CustomSnackBar.success(message: "Berhasil memproses order"),
       );
 
       Navigator.pop(context);
@@ -78,10 +78,7 @@ class _TambahOrderState extends State<TambahOrder> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.lightblue,
-      appBar: AppBar(
-        title: const Text("Order SiCuci"),
-        // backgroundColor: AppColor.bold3,
-      ),
+      appBar: AppBar(title: const Text("Order SiCuci")),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -175,12 +172,12 @@ class _TambahOrderState extends State<TambahOrder> {
                               : () {
                                 if (_selectedLayanan != null &&
                                     _selectedPengantaran != null) {
-                                  submitOrder(); // ✅ Kirim jika data lengkap
+                                  submitOrder();
                                 } else {
                                   showTopSnackBar(
                                     Overlay.of(context),
                                     CustomSnackBar.info(
-                                      message: "Lengkapi pesanan! ",
+                                      message: "Lengkapi pesanan dulu, yaa ",
                                     ),
                                   );
                                 }

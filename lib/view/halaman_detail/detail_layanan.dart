@@ -60,6 +60,7 @@ class _DetailLayananState extends State<DetailLayanan> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          //HAPUS LAYANAN
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColor.lightgreen,
@@ -68,6 +69,7 @@ class _DetailLayananState extends State<DetailLayanan> {
                               final confirm = await showDialog<bool>(
                                 context: context,
                                 builder:
+                                    //ALERT DIALOG
                                     (_) => AlertDialog(
                                       title: Text(
                                         "Yakin ingin menghapus pesanan ini?",
@@ -88,6 +90,7 @@ class _DetailLayananState extends State<DetailLayanan> {
                                       ],
                                     ),
                               );
+                              //MEMPERBARUI DATA LAYANAN
                               if (confirm == true) {
                                 try {
                                   final hapusResponse = await LayananApi()

@@ -80,7 +80,7 @@ class _HalamanProfileState extends State<HalamanProfile> {
     } catch (e) {
       showTopSnackBar(
         Overlay.of(context),
-        CustomSnackBar.info(message: "Layanan berhasil dihapus!"),
+        CustomSnackBar.info(message: "Layanan berhasil dihapus"),
       );
     }
   }
@@ -204,14 +204,14 @@ class _HalamanProfileState extends State<HalamanProfile> {
                                   showTopSnackBar(
                                     Overlay.of(context),
                                     CustomSnackBar.success(
-                                      message: "${editProfile.message}",
+                                      message: editProfile.message,
                                     ),
                                   );
                                 } catch (e) {
                                   showTopSnackBar(
                                     Overlay.of(context),
                                     CustomSnackBar.error(
-                                      message: "Layanan berhasil dihapus!",
+                                      message: "Layanan berhasil dihapus",
                                     ),
                                   );
                                 }

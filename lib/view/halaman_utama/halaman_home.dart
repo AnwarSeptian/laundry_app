@@ -27,6 +27,7 @@ class _HalamanHomeState extends State<HalamanHome> {
   List<DataLayanan> layananList = [];
   bool isLoading = true;
 
+  //METHOD GET DATA
   void loadData() async {
     try {
       final profilRes = await UserService().getProfile();
