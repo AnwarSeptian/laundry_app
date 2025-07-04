@@ -25,8 +25,9 @@ class _TambahOrderState extends State<TambahOrder> {
 
   @override
   void initState() {
-    super.initState();
     loadData();
+
+    super.initState();
   }
 
   Future<void> loadData() async {
@@ -173,6 +174,7 @@ class _TambahOrderState extends State<TambahOrder> {
                                 if (_selectedLayanan != null &&
                                     _selectedPengantaran != null) {
                                   submitOrder();
+                                  loadData();
                                 } else {
                                   showTopSnackBar(
                                     Overlay.of(context),

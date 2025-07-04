@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:laundry_app/view/halaman_detail/maps.dart';
 import 'package:laundry_app/view/halaman_utama/halaman_home.dart';
 import 'package:laundry_app/view/halaman_utama/halaman_pesanan.dart';
 import 'package:laundry_app/view/halaman_utama/halaman_profile.dart';
@@ -15,6 +16,7 @@ class _ButtonNavbarState extends State<ButtonNavbar> {
     HalamanHome(),
     HalamanPesanan(),
     HalamanProfile(),
+    HalamanMaps(),
   ];
   int _buttonSelected = 0;
   @override
@@ -39,6 +41,7 @@ class _ButtonNavbarState extends State<ButtonNavbar> {
             label: "Pesanan",
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person_3), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: "Profile"),
         ],
       ),
       body: _screen[_buttonSelected],

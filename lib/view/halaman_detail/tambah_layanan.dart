@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:laundry_app/api/layanan_api.dart';
 import 'package:laundry_app/constant/app_color.dart';
+import 'package:laundry_app/model/layanan_response.dart';
+import 'package:laundry_app/model/user_respons.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class TambahLayanan extends StatefulWidget {
-  const TambahLayanan({super.key});
+  final Future<void> Function() loadData;
+  const TambahLayanan({super.key, required this.loadData});
 
   @override
   State<TambahLayanan> createState() => _TambahLayananState();
@@ -15,7 +18,10 @@ class _TambahLayananState extends State<TambahLayanan> {
   final fromkey = GlobalKey<FormState>();
   final TextEditingController layananController = TextEditingController();
 
-  void tambahLayanan() async {
+  Data? profileUser;
+  List<DataLayanan> layananList = [];
+
+  Future<void> tambahLayanan() async {
     try {
       final response = await LayananApi.addLayanan(
         name: layananController.text,
@@ -84,9 +90,10 @@ class _TambahLayananState extends State<TambahLayanan> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (fromkey.currentState!.validate()) {
-                        tambahLayanan();
+                        await tambahLayanan();
+                        await widget.loadData();
                       }
                     },
                     child: Text(

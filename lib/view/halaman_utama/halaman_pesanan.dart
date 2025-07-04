@@ -29,8 +29,9 @@ class _HalamanPesananState extends State<HalamanPesanan> {
 
   @override
   void initState() {
-    super.initState();
     _loadOrders();
+
+    super.initState();
   }
 
   Future<void> _loadOrders() async {
@@ -136,6 +137,7 @@ class _HalamanPesananState extends State<HalamanPesanan> {
                           icon: Icon(Icons.edit),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColor.lightblue,
+                            iconSize: 12,
                           ),
                           onPressed: () async {
                             String? selectedStatus;
@@ -296,7 +298,16 @@ class _HalamanPesananState extends State<HalamanPesanan> {
           style: TextStyle(color: AppColor.lightblue1),
         ),
         backgroundColor: AppColor.bold,
+        actions: [
+          IconButton(
+            onPressed: () {
+              _loadOrders();
+            },
+            icon: Icon(Icons.refresh, color: AppColor.lightgreen),
+          ),
+        ],
       ),
+
       backgroundColor: AppColor.bluegrey,
       body: OverlayLoaderWithAppIcon(
         isLoading: isLoading,

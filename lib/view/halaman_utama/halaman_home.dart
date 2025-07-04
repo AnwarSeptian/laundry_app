@@ -28,7 +28,7 @@ class _HalamanHomeState extends State<HalamanHome> {
   bool isLoading = true;
 
   //METHOD GET DATA
-  void loadData() async {
+  Future<void> loadData() async {
     try {
       final profilRes = await UserService().getProfile();
       final layananRes = await LayananApi.getLayanan();
@@ -60,7 +60,9 @@ class _HalamanHomeState extends State<HalamanHome> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TambahLayanan()),
+            MaterialPageRoute(
+              builder: (context) => TambahLayanan(loadData: loadData),
+            ),
           );
         },
         backgroundColor: AppColor.lightgreen,
@@ -152,6 +154,7 @@ class _HalamanHomeState extends State<HalamanHome> {
                                             (context) => DetailLayanan(
                                               layanan: layanan.name,
                                               id: layanan.id,
+                                              loadData: loadData,
                                             ),
                                       ),
                                     );

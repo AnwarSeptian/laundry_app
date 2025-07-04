@@ -173,7 +173,7 @@ class DataOrder {
             ? ServiceType.fromJson(json["service_type"])
             : ServiceType(
               id: 0,
-              name: "Tidak diketahui",
+              name: "Tidak tersedia",
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
             ),

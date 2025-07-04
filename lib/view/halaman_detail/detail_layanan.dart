@@ -7,7 +7,14 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 class DetailLayanan extends StatefulWidget {
   final int id;
   final String? layanan;
-  const DetailLayanan({super.key, required this.id, this.layanan});
+  final Future<void> Function() loadData;
+
+  const DetailLayanan({
+    super.key,
+    required this.id,
+    this.layanan,
+    required this.loadData,
+  });
 
   @override
   State<DetailLayanan> createState() => _DetailLayananState();
