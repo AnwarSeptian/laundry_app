@@ -56,15 +56,19 @@ class _HalamanHomeState extends State<HalamanHome> {
     return Scaffold(
       backgroundColor: AppColor.bluegrey,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => TambahLayanan()),
           );
+          if (result == true) {
+            loadData();
+          }
         },
         backgroundColor: AppColor.lightgreen,
         child: Icon(Icons.add),
       ),
+
       body: OverlayLoaderWithAppIcon(
         isLoading: isLoading,
         appIcon: Image.asset("assets/images/logo.png"),
@@ -143,8 +147,8 @@ class _HalamanHomeState extends State<HalamanHome> {
                                 ),
                                 elevation: 4,
                                 child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
+                                  onTap: () async {
+                                    final result = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder:
@@ -154,6 +158,9 @@ class _HalamanHomeState extends State<HalamanHome> {
                                             ),
                                       ),
                                     );
+                                    if (result == true) {
+                                      loadData();
+                                    }
                                   },
                                   child: Stack(
                                     children: [

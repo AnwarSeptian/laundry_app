@@ -74,10 +74,7 @@ class _TambahOrderState extends State<TambahOrder> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.lightblue,
-      appBar: AppBar(
-        title: const Text("Order SiCuci"),
-        // backgroundColor: AppColor.bold3,
-      ),
+      appBar: AppBar(title: const Text("Order SiCuci")),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),

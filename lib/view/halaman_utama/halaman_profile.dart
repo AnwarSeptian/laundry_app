@@ -50,7 +50,13 @@ class _HalamanProfileState extends State<HalamanProfile> {
         context: context,
         builder:
             (context) => AlertDialog(
-              title: const Text("Daftar Pengguna"),
+              title: Row(
+                children: [
+                  Icon(Icons.group, color: AppColor.bold),
+                  SizedBox(width: 8),
+                  Text("Daftar Pengguna"),
+                ],
+              ),
               content: SizedBox(
                 width: double.maxFinite,
                 child: ListView.separated(
@@ -59,17 +65,29 @@ class _HalamanProfileState extends State<HalamanProfile> {
                   separatorBuilder: (_, __) => Divider(),
                   itemBuilder: (context, index) {
                     final user = users[index];
+                    final initial =
+                        user.name.isNotEmpty ? user.name[0].toUpperCase() : "?";
                     return ListTile(
-                      leading: Icon(Icons.person),
-                      title: Text(user.name),
+                      leading: CircleAvatar(
+                        backgroundColor: AppColor.bold3,
+                        child: Text(
+                          initial,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      title: Text(
+                        user.name,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       subtitle: Text(user.email),
                     );
                   },
                 ),
               ),
               actions: [
-                TextButton(
-                  child: const Text("Tutup"),
+                TextButton.icon(
+                  icon: Icon(Icons.close, color: AppColor.bold),
+                  label: Text("Tutup", style: TextStyle(color: AppColor.bold)),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
@@ -172,9 +190,41 @@ class _HalamanProfileState extends State<HalamanProfile> {
                                 context: context,
                                 builder:
                                     (_) => AlertDialog(
-                                      title: TextFormField(
-                                        controller: nameController,
+                                      title: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Edit Nama Pengguna",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                              color: AppColor.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          TextFormField(
+                                            controller: nameController,
+                                            decoration: InputDecoration(
+                                              hintText: "Masukkan nama baru",
+                                              filled: true,
+                                              fillColor: AppColor.lightblue,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 14,
+                                                  ),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
+
                                       actions: [
                                         TextButton(
                                           onPressed:
@@ -264,7 +314,7 @@ class _HalamanProfileState extends State<HalamanProfile> {
                                 radius: 20,
 
                                 child: Icon(
-                                  Icons.person_search_sharp,
+                                  Icons.groups_sharp,
                                   color: Colors.white,
                                 ),
                               ),

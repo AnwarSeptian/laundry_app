@@ -42,7 +42,7 @@ class _HalamanPesananState extends State<HalamanPesanan> {
     } catch (e) {
       print('Error: $e');
       setState(() {
-        errorMessage = "Gagal memuat data  $e";
+        errorMessage = "Gagal memuat data $e";
       });
     } finally {
       setState(() {
@@ -132,7 +132,7 @@ class _HalamanPesananState extends State<HalamanPesanan> {
     }
   }
 
-  // Helper to get color based on status
+  // warna status
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'baru':
@@ -145,6 +145,22 @@ class _HalamanPesananState extends State<HalamanPesanan> {
         return Colors.red;
       default:
         return Colors.grey;
+    }
+  }
+
+  // Icon Status
+  IconData _getStatusIcon(String status) {
+    switch (status.toLowerCase()) {
+      case 'baru':
+        return Icons.fiber_new;
+      case 'proses':
+        return Icons.hourglass_empty;
+      case 'selesai':
+        return Icons.check_circle;
+      case 'dibatalkan':
+        return Icons.cancel;
+      default:
+        return Icons.info;
     }
   }
 
@@ -166,6 +182,7 @@ class _HalamanPesananState extends State<HalamanPesanan> {
           style: TextStyle(color: AppColor.lightblue1),
         ),
         backgroundColor: AppColor.bold,
+        iconTheme: IconThemeData(color: AppColor.bluegrey),
       ),
       backgroundColor: AppColor.bluegrey,
       body: OverlayLoaderWithAppIcon(
@@ -176,6 +193,8 @@ class _HalamanPesananState extends State<HalamanPesanan> {
         appIconSize: 100,
         child:
             isLoading
+                ? Center(child: Text("Memuat pesanan..."))
+                : orders.isEmpty
                 ? Center(child: Text("Tidak ada pesanan"))
                 : ListView.builder(
                   padding: const EdgeInsets.all(16),
@@ -193,15 +212,29 @@ class _HalamanPesananState extends State<HalamanPesanan> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: _getStatusColor(order.status),
+                            child: Icon(
+                              _getStatusIcon(order.status),
+                              color: Colors.white,
+                            ),
+                          ),
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
+                                  Text(
+                                    "Pesanan #${order.id}",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 4,
+                                      horizontal: 8,
                                       vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
@@ -210,27 +243,25 @@ class _HalamanPesananState extends State<HalamanPesanan> {
                                       ).withOpacity(0.2),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: Text(order.status),
+                                    child: Text(
+                                      order.status,
+                                      style: TextStyle(
+                                        color: _getStatusColor(order.status),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                              Text("Jenis Layanan: ${order.layanan}"),
-                              Text("Tipe Layanan : ${order.serviceType.name}"),
-
+                              const SizedBox(height: 4),
+                              Text("Layanan: ${order.layanan}"),
+                              Text("Tipe: ${order.serviceType.name}"),
                               Text(
-                                "Dibuat : ${DateFormat('dd/MM/yyyy').format(order.createdAt)}",
+                                "Dibuat: ${DateFormat('dd/MM/yyyy').format(order.createdAt)}",
                                 style: TextStyle(color: AppColor.bluegrey),
                               ),
                             ],
                           ),
-
-                          // trailing: IconButton(
-                          //   icon: Icon(Icons.navigate_next),
-                          //   onPressed: () async {
-                          //     await showOrderDetailDialog(context, order.id);
-                          //   },
-                          // ),
-                          leading: CircleAvatar(child: Text("${index + 1}")),
                         ),
                       ),
                     );

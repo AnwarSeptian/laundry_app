@@ -77,114 +77,113 @@ class _HalamanRegisterState extends State<HalamanRegister> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
-          child: SizedBox(
-            width: 300,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Register",
-                  style: TextStyle(fontSize: 32, color: Colors.white70),
-                ),
-                height(32),
-
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white38,
-                    borderRadius: BorderRadius.circular(16),
+          child: SingleChildScrollView(
+            // ini dia kuncinya
+            child: SizedBox(
+              width: 300,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Register",
+                    style: TextStyle(fontSize: 32, color: Colors.white70),
                   ),
-                  child: buildTextField(
-                    hintText: "Masukkan nama anda",
-                    controller: nameController,
-                  ),
-                ),
-                height(28),
-
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white38,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: buildTextField(
-                    hintText: "Masukkan email anda",
-                    controller: emailController,
-                  ),
-                ),
-                height(28),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white38,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: buildTextField(
-                    hintText: "Kata Sandi",
-                    isPassword: true,
-                    controller: passwordController,
-                  ),
-                ),
-                height(36),
-                GestureDetector(
-                  onTap:
-                      isLoading
-                          ? null
-                          : () {
-                            if (_formKey.currentState!.validate()) {
-                              register();
-                              print('Email : ${emailController.text}');
-                            }
-                          },
-                  child:
-                      isLoading
-                          ? Center(child: CircularProgressIndicator())
-                          : Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.white38,
-                                radius: 26,
-                                child: Icon(
-                                  Icons.navigate_next_sharp,
-                                  color: Colors.black54,
-                                  size: 32,
-                                ),
-                              ),
-                            ],
-                          ),
-                ),
-
-                height(30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Sudah memiliki akun?",
-                      style: TextStyle(fontSize: 16, color: Colors.white54),
+                  height(32),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white38,
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HalamanLogin(),
+                    child: buildTextField(
+                      hintText: "Masukkan nama anda",
+                      controller: nameController,
+                    ),
+                  ),
+                  height(28),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white38,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: buildTextField(
+                      hintText: "Masukkan email anda",
+                      controller: emailController,
+                    ),
+                  ),
+                  height(28),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white38,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: buildTextField(
+                      hintText: "Kata Sandi",
+                      isPassword: true,
+                      controller: passwordController,
+                    ),
+                  ),
+                  height(36),
+                  GestureDetector(
+                    onTap:
+                        isLoading
+                            ? null
+                            : () {
+                              if (_formKey.currentState!.validate()) {
+                                register();
+                                print('Email : ${emailController.text}');
+                              }
+                            },
+                    child:
+                        isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.white38,
+                                  radius: 26,
+                                  child: Icon(
+                                    Icons.navigate_next_sharp,
+                                    color: Colors.black54,
+                                    size: 32,
+                                  ),
+                                ),
+                              ],
+                            ),
+                  ),
+                  height(30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Sudah memiliki akun?",
+                        style: TextStyle(fontSize: 16, color: Colors.white54),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HalamanLogin(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      },
-                      child: Text(
-                        "Login",
-                        style: TextStyle(
-                          color: Colors.white70,
-
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

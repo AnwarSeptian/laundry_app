@@ -16,7 +16,7 @@ class HalamanLogin extends StatefulWidget {
 
 class _HalamanLoginState extends State<HalamanLogin> {
   bool isLoading = false;
-  bool isVisibility = false;
+  bool isVisibility = true;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final UserService userService = UserService();
@@ -89,105 +89,117 @@ class _HalamanLoginState extends State<HalamanLogin> {
   Padding buildLayer() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Center(
-        child: SizedBox(
-          width: 300,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  color: Colors.white54,
-
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Image.asset("assets/images/logo.png"),
-              ),
-              height(26),
-
-              buildTitle("Silahkan masuk ke akun anda"),
-              height(56),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white38,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: buildTextField(
-                  hintText: "Masukkan Email",
-                  controller: emailController,
-                ),
-              ),
-              height(28),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white38,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: buildTextField(
-                  hintText: "Kata Sandi",
-                  isPassword: true,
-                  controller: passwordController,
-                ),
-              ),
-              height(36),
-              GestureDetector(
-                onTap: () {
-                  if (_formKey.currentState!.validate()) {
-                    login();
-                    print('Email : ${emailController.text}');
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white38,
-                      radius: 26,
-                      child: Icon(
-                        Icons.navigate_next_sharp,
-                        color: Colors.black54,
-                        size: 32,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              height(30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Belum punya akun?",
-                    style: TextStyle(fontSize: 16, color: Colors.white54),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HalamanRegister(),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Center(
+                  child: SizedBox(
+                    width: 300,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            color: Colors.white54,
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          child: Image.asset("assets/images/logo.png"),
                         ),
-                      );
-                    },
-                    child: Text(
-                      "Register",
-                      style: TextStyle(
-                        color: Colors.white70,
-
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                        height(26),
+                        buildTitle("Silahkan masuk ke akun anda"),
+                        height(56),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white38,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: buildTextField(
+                            hintText: "Masukkan Email",
+                            controller: emailController,
+                          ),
+                        ),
+                        height(28),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white38,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: buildTextField(
+                            hintText: "Kata Sandi",
+                            isPassword: true,
+                            controller: passwordController,
+                          ),
+                        ),
+                        height(36),
+                        GestureDetector(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              login();
+                              print('Email : ${emailController.text}');
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.white38,
+                                radius: 26,
+                                child: Icon(
+                                  Icons.navigate_next_sharp,
+                                  color: Colors.black54,
+                                  size: 32,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        height(30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Belum punya akun?",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white54,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HalamanRegister(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Register",
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
