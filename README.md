@@ -1,16 +1,12 @@
-# laundry_app
+## 📱 Tampilan Aplikasi SiCuci
 
-A new Flutter project.
+### 🏠 Home
+![Home](https://github.com/AnwarSeptian/laundry_app/blob/main/assets/images/HOME%20SI%20CUCI.png)
 
-## Getting Started
+### 👤 Profil Pengguna
+![Profil](https://github.com/AnwarSeptian/laundry_app/blob/main/assets/images/Profile%20SiCuCi.png)
 
-This project is a starting point for a Flutter application.
+### 📦 Riwayat Pesanan
+![Riwayat](https://github.com/AnwarSeptian/laundry_app/blob/main/assets/images/Riwayat%20Pesanan%20SiCuCi.png)
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
