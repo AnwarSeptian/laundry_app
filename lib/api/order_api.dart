@@ -78,6 +78,7 @@ class OrderApi {
     required String status,
     required int id,
   }) async {
+    // Disederhanakan: backend memastikan method POST ke /orders/{id}/status
     String? token = await PreferenceHandler.getToken();
     final response = await http.post(
       Uri.parse("${Endpoint.orders}/$id/status"),
@@ -88,11 +89,15 @@ class OrderApi {
       },
       body: jsonEncode({"status": status}),
     );
-    print("Ganti status order ${response.body}");
+
+    print(
+      "POST ${Endpoint.orders}/$id/status [${response.statusCode}] ${response.body}",
+    );
 
     if (response.statusCode == 200) {
       return statusOrderFromJson(response.body);
     } else {
+      // Pesan ringkas sesuai pola detailOrder
       throw Exception("Gagal mengupdate order");
     }
   }
